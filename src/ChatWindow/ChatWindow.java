@@ -5,7 +5,9 @@
  */
 package ChatWindow;
 
+import ChatWindow.View.FXMLDocumentController;
 import Controller.ClientController;
+import Model.Massage;
 import Model.User;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,6 +22,7 @@ public class ChatWindow {
     User from;
     User to;
     ClientController controller;
+    FXMLDocumentController chatWindowcontroller;
 
     public ChatWindow(User me, User f,ClientController controller) {
         this.from = me;
@@ -34,7 +37,8 @@ public class ChatWindow {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("/ChatWindow/View/FXMLDocument.fxml").openStream());
-            
+            chatWindowcontroller = fxmlLoader.getController();
+            chatWindowcontroller.setCon(this,from);
             Scene scene = new Scene(root);
             stage.setTitle("chat with "+ to.getUserName());
             stage.setScene(scene);
@@ -47,11 +51,17 @@ public class ChatWindow {
             ex.printStackTrace();
         }
     }
-
     
-    /**
-     * @param args the command line arguments
-     */
+    
+
+    public void recieveMassage(Massage msg){
+        chatWindowcontroller.showMasssage(msg, from);
+    }
+
+    public void sendMassage(Massage msg) {
+        controller.sendMassage(msg,from,to);
+    }
+  
     
     
 }

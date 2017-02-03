@@ -2,26 +2,17 @@ package Controller;
 
 import ChatWindow.ChatWindow;
 import Model.Massage;
-import View.SigninPageController;
-import View.SignupPageController;
-import View.profile_Style_Controller;
+import Model.Model;
 import Model.ServerInterface;
 import Model.User;
 import View.SigninPageController;
-import View.SigninPageController;
-import View.SignupPageController;
 import View.SignupPageController;
 import View.profile_Style_Controller;
-import View.profile_Style_Controller;
-import java.rmi.AccessException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -43,6 +34,7 @@ public class ClientController extends Application {
     User me;
     HashMap<String,User> friends;
     public HashMap<User,ChatWindow> chatWindows= new HashMap<User, ChatWindow>();
+    Model model;
     public static void main(String[] args) {
         
             launch(args);
@@ -58,10 +50,9 @@ public class ClientController extends Application {
     public void start(Stage stage) throws Exception {
         myStage = stage;
         
-       
-        
-        
-        
+       stage.setOnCloseRequest((event) -> {
+           unRegister();
+       });
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent signin = fxmlLoader.load(getClass().getResource("/View/signinPage.fxml").openStream());
         signinScene = new Scene(signin);
@@ -101,7 +92,25 @@ public class ClientController extends Application {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
+         model = new Model(this);
+         
+    }
+    
+    public void register(){
+        try {
+            ServerIntRef.registerUser(me.getId(), model);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void unRegister(){
+        try {
+            ServerIntRef.unRegisterUser(me.getId(), model);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
     }
 
     //those all method to send data to user

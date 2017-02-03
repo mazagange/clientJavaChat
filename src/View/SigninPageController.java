@@ -64,6 +64,7 @@ public class SigninPageController implements Initializable{
                     User user= controller.getUserData(email.getText());
                     if(Password.checkPassword(pass.getText(), user.getPassword())){
                         controller.registerMe(user);
+                        controller.register();
                         controller.changeView("profilePage");
                     }else{
                         alert.setContentText("wrong password");

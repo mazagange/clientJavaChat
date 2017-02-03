@@ -45,7 +45,7 @@
                   </DisplacementMap>
                </effect>
             </MenuBar>
-            <TextArea id="chatScreen" layoutX="13.0" layoutY="35.0" prefHeight="217.0" prefWidth="613.0" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="35.0">
+            <TextArea id="chatScreen" fx:id="chatArea" layoutX="13.0" layoutY="35.0" prefHeight="217.0" prefWidth="613.0" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="35.0">
                <font>
                   <Font size="15.0" />
                </font>
@@ -53,8 +53,8 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="637.0" style="-fx-background-color: #488484;">
          <children>
-            <TextArea layoutX="15.0" layoutY="43.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="78.0" prefWidth="613.0" />
-            <Button id="sendButton" defaultButton="true" layoutX="523.0" layoutY="63.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="89.0" style="-fx-background-color: #ff931e; -fx-border-radius: 5px;" text="Send" textFill="WHITE" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+            <TextArea fx:id="sendArea" layoutX="15.0" layoutY="43.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="78.0" prefWidth="613.0" />
+            <Button id="sendButton" fx:id="sendBtn" defaultButton="true" layoutX="523.0" layoutY="63.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="89.0" style="-fx-background-color: #ff931e; -fx-border-radius: 5px;" text="Send" textFill="WHITE" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
                <effect>
                   <DisplacementMap>
                      <mapData>
@@ -66,7 +66,7 @@
                   <Font name="Bookman Old Style Bold" size="20.0" />
                </font>
             </Button>
-            <ColorPicker layoutX="112.0" layoutY="11.0" prefHeight="25.0" prefWidth="89.0" promptText="Chosse a color" style="-fx-background-color: #fff;">
+            <ColorPicker fx:id="color" layoutX="112.0" layoutY="11.0" prefHeight="25.0" prefWidth="89.0" promptText="Chosse a color" style="-fx-background-color: #fff;">
                <effect>
                   <DisplacementMap>
                      <mapData>
@@ -75,7 +75,7 @@
                   </DisplacementMap>
                </effect>
             </ColorPicker>
-            <ChoiceBox layoutX="298.0" layoutY="11.0" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #fff;">
+            <ChoiceBox fx:id="size" layoutX="298.0" layoutY="11.0" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #fff;">
                <effect>
                   <DisplacementMap>
                      <mapData>
