@@ -1,0 +1,22 @@
+/*519
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+   -fx-background-image: url("SiginPage.png");
+                          -fx-background-repeat: stretch;   
+                         -fx-background-size: 400 650;
+ 
+}
+#sigininBtn{
+    -fx-background-color:#ff931e;
+    -fx-background-radius:30;
+    -fx-background-insets:0;
+    -fx-text-fill:white;
+}
+#siginUpLayot{
+    -fx-background-image: url("SigupPage.png");
+                          -fx-background-repeat: stretch;   
+                         -fx-background-size: 400 650;
+}

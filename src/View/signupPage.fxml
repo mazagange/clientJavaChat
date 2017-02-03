@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane id="siginUpLayot" fx:id="myPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="400.0" stylesheets="@/View/startpage.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.SignupPageController">
+   <top>
+      <HBox prefHeight="151.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="81.0" fitWidth="105.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </HBox.margin>
+            </ImageView>
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <Region prefHeight="574.0" prefWidth="73.0" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <VBox alignment="TOP_CENTER" prefHeight="734.0" prefWidth="299.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox spacing="15.0">
+               <children>
+                  <TextField fx:id="userName" prefHeight="20.0" prefWidth="247.0" promptText="User Name">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox spacing="25.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <PasswordField fx:id="passWord" prefHeight="28.0" prefWidth="245.0" promptText="Password" />
+               </children>
+            </HBox>
+            <HBox>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <PasswordField fx:id="cPassWord" prefHeight="31.0" prefWidth="244.0" promptText="confirm password" />
+               </children>
+            </HBox>
+            <HBox prefHeight="38.0" prefWidth="290.0" spacing="25.0">
+               <children>
+                  <ComboBox fx:id="myComboBox" prefHeight="31.0" prefWidth="248.0" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <TextField fx:id="email" prefHeight="27.0" prefWidth="252.0" promptText="Email">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <VBox prefHeight="48.0" prefWidth="253.0">
+                     <children>
+                        <Label text="BirthDay:" textFill="#f2eeee">
+                           <font>
+                              <Font name="Comic Sans MS" size="18.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="datePicker" prefHeight="29.0" prefWidth="249.0">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin></DatePicker>
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <VBox alignment="CENTER_LEFT" prefHeight="68.0" prefWidth="253.0">
+               <children>
+                  <Label text="Gender:" textFill="#fcfcfc">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="40.0" prefWidth="192.0" spacing="20.0">
+                     <children>
+                        <RadioButton fx:id="male" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Male">
+                           <font>
+                              <Font name="Comic Sans MS" size="18.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="female" mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Female">
+                           <font>
+                              <Font name="Comic Sans MS" size="18.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </VBox>
+            <HBox spacing="30.0">
+               <children>
+                  <Button id="sigininBtn" fx:id="signupBtn" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#saveSuccess" prefHeight="51.0" prefWidth="105.0" text="Save">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                  </Button>
+                  <Button id="sigininBtn" fx:id="cancelBtn" alignment="CENTER" cancelButton="true" mnemonicParsing="false" onAction="#cancelSuccess" prefHeight="51.0" prefWidth="112.0" text="Cancel">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <right>
+      <Region prefHeight="549.0" prefWidth="83.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>
