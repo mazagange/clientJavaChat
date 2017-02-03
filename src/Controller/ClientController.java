@@ -1,6 +1,7 @@
 package Controller;
 
 import ChatWindow.ChatWindow;
+import Model.Massage;
 import View.SigninPageController;
 import View.SignupPageController;
 import View.profile_Style_Controller;
@@ -190,6 +191,24 @@ public class ClientController extends Application {
         if(!chatWindows.containsKey(f)){
             ChatWindow c = new ChatWindow(me,f,this);
             chatWindows.put(f, c);
+        }
+    }
+
+    public void sendMassage(Massage msg, User from, User to) {
+        try {
+            ServerIntRef.sendToUser(msg, from.getId(), to.getId());
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void recieveMassage(Massage msg,User from){
+        if(chatWindows.containsKey(from)){
+            chatWindows.get(from).recieveMassage(msg);
+        }else{
+            ChatWindow c = new ChatWindow(me, from, this);
+            chatWindows.put(from, c);
+            c.recieveMassage(msg);
         }
     }
 }
