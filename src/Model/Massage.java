@@ -15,8 +15,8 @@ import javafx.scene.text.Font;
  */
 public class Massage implements Serializable{
     private String content;
-    private Color color;
-    private Font font;
+    private TextColor color;
+    private TextFont font;
 
     public String getContent() {
         return content;
@@ -26,23 +26,23 @@ public class Massage implements Serializable{
         this.content = content;
     }
 
-    public Color getColor() {
+    public TextColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(TextColor color) {
         this.color = color;
     }
 
-    public Font getFont() {
+    public TextFont getFont() {
         return font;
     }
 
-    public void setFont(Font font) {
+    public void setFont(TextFont font) {
         this.font = font;
     }
 
-    public Massage(String content, Color color, Font font) {
+    public Massage(String content, TextColor color, TextFont font) {
         this.content = content;
         this.color = color;
         this.font = font;

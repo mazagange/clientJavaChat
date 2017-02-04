@@ -45,7 +45,7 @@ public class ChatWindow {
             stage.show();
             
             stage.setOnCloseRequest((event) -> {
-                controller.chatWindows.remove(to);
+                controller.chatWindows.remove(to.getId());
             });
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -55,7 +55,7 @@ public class ChatWindow {
     
 
     public void recieveMassage(Massage msg){
-        chatWindowcontroller.showMasssage(msg, from);
+        chatWindowcontroller.showMasssage(msg, to);
     }
 
     public void sendMassage(Massage msg) {

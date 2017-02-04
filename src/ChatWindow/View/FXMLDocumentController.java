@@ -8,9 +8,14 @@ package ChatWindow.View;
 import ChatWindow.ChatWindow;
 import Controller.ClientController;
 import Model.Massage;
+import Model.TextColor;
+import Model.TextFont;
 import Model.User;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,6 +39,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TextArea sendArea;
     @FXML private ColorPicker color;
     @FXML private ComboBox<Integer> fontSize;
+    ObservableList fontlist =  FXCollections.observableArrayList(10,12,14,16,18,20);
     ChatWindow chatWindow; 
     @FXML private Button sendBtn;
     User me;
@@ -44,10 +50,16 @@ public class FXMLDocumentController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         
+        fontSize.getItems().addAll(fontlist); 
+        fontSize.getSelectionModel().selectFirst();
+        color.setValue(Color.BLUE);
         sendBtn.setOnAction((event) -> {
-            Massage msg = new Massage(sendArea.getText(), color.getValue(), new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
-            chatWindow.sendMassage(msg);
-            showMasssage(msg, me);
+            if(!sendArea.getText().equals("")){
+                Massage msg = new Massage(sendArea.getText(), new TextColor(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue()), new TextFont(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
+                chatWindow.sendMassage(msg);
+                showMasssage(msg, me);
+                sendArea.clear();
+            }
         });
     }    
     public void saveChat(ActionEvent a){
@@ -62,11 +74,11 @@ public class FXMLDocumentController implements Initializable {
         chatArea.setFont(Font.getDefault());
         chatArea.appendText(from.getUserName()+" : ");
         chatArea.setStyle( "-fx-text-fill: " + toRgbString(msg.getColor()) + ";");
-        chatArea.setFont(msg.getFont());
+        chatArea.setFont(new Font(msg.getFont().getSize()));
         chatArea.appendText(msg.getContent()+"\n");
     }
     
-    private String toRgbString(Color c) {
+    private String toRgbString(TextColor c) {
         return "rgb("
                           + to255Int(c.getRed())
                     + "," + to255Int(c.getGreen())

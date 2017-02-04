@@ -88,7 +88,7 @@ public class profile_Style_Controller implements Initializable {
         nameOfUser.setText(user.getUserName());
         
         
-    }
+}
     
     
 }

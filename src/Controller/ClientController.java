@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,7 +34,7 @@ public class ClientController extends Application {
     private Stage myStage;
     User me;
     HashMap<String,User> friends;
-    public HashMap<User,ChatWindow> chatWindows= new HashMap<User, ChatWindow>();
+    public HashMap<Integer,ChatWindow> chatWindows= new HashMap<>();
     Model model;
     public static void main(String[] args) {
         
@@ -197,9 +198,9 @@ public class ClientController extends Application {
     public void openChatWindow(String friend) {
         
         User f = friends.get(friend);
-        if(!chatWindows.containsKey(f)){
+        if(!chatWindows.containsKey(f.getId())){
             ChatWindow c = new ChatWindow(me,f,this);
-            chatWindows.put(f, c);
+            chatWindows.put(f.getId(), c);
         }
     }
 
@@ -212,12 +213,18 @@ public class ClientController extends Application {
     }
     
     public void recieveMassage(Massage msg,User from){
-        if(chatWindows.containsKey(from)){
-            chatWindows.get(from).recieveMassage(msg);
+        if(chatWindows.containsKey(from.getId())){
+            chatWindows.get(from.getId()).recieveMassage(msg);
         }else{
-            ChatWindow c = new ChatWindow(me, from, this);
-            chatWindows.put(from, c);
-            c.recieveMassage(msg);
+            Platform.runLater(
+                () -> {
+                    // Update UI here.
+                    ChatWindow c = new ChatWindow(me, from, this);
+                    chatWindows.put(from.getId(), c);
+                    c.recieveMassage(msg);
+                  }
+                );
+            
         }
     }
 }
