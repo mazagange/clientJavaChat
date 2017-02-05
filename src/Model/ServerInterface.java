@@ -33,4 +33,6 @@ public interface ServerInterface extends Remote {
     public void unRegisterGroup(User user,Group group)throws RemoteException;
     
     public void sendToGroup(Massage msg,Group group)throws RemoteException;
+
+    public void addFriend(int id,String emailOfFriend,String Cat) throws RemoteException;
 }

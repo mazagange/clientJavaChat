@@ -13,6 +13,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -32,8 +34,8 @@ public class ClientController extends Application {
     private SigninPageController signInController;
     private profile_Style_Controller profileController;
     private Stage myStage;
-    User me;
-    HashMap<String,User> friends;
+    public User me;
+    public HashMap<String,User> friends;
     public HashMap<Integer,ChatWindow> chatWindows= new HashMap<>();
     Model model;
     public static void main(String[] args) {
@@ -74,7 +76,7 @@ public class ClientController extends Application {
         
         
         
-
+        stage.setResizable(false);
         stage.setScene(signinScene);
         stage.setTitle("Connect me");
         stage.show();
@@ -108,8 +110,11 @@ public class ClientController extends Application {
     
     public void unRegister(){
         try {
-            ServerIntRef.unRegisterUser(me.getId(), model);
-        } catch (RemoteException ex) {
+            if(me !=null){
+                ServerIntRef.unRegisterUser(me.getId(), model);
+            }
+            Platform.exit();
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -225,6 +230,14 @@ public class ClientController extends Application {
                   }
                 );
             
+        }
+    }
+
+    public void addFriend(String email) {
+        try {
+            ServerIntRef.addFriend(me.getId(),email,"friends");
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
         }
     }
 }

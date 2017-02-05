@@ -13,21 +13,33 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 /**
@@ -41,7 +53,7 @@ public class profile_Style_Controller implements Initializable {
     @FXML private Pane listpane;
     @FXML private Label nameOfUser;
     ObservableList<String> friends = FXCollections.observableArrayList();
-    ListView<String> listOfFriends= new ListView<>(friends);;
+    ListView<String> listOfFriends= new ListView<>(friends);
     
     @FXML private ComboBox comboStatus;
     @FXML ObservableList<String> states=FXCollections.observableArrayList("available","busy","away");
@@ -89,6 +101,92 @@ public class profile_Style_Controller implements Initializable {
         
         
 }
+    
+    @FXML
+    void addFriendAction(ActionEvent event) {
+        System.out.println("add friend");
+        Dialog< String> dialog = new Dialog<>();
+        dialog.setTitle("Add friend");
+        dialog.setHeaderText("Send a friend request");
+
+        // Set the icon (must be included in the project).
+        //dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
+        dialog.getDialogPane().getStyleClass().add("myDialog");
+        // Set the button types.
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        dialog.getDialogPane().setStyle("-fx-background-color: #488484;");
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        //grid.setStyle("-fx-background-color: #488484;");
+        TextField username = new TextField();
+        username.setPromptText("Email");
+        
+
+        grid.add(new Label("Email:"), 0, 0);
+        grid.add(username, 1, 0);
+
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node loginButton = dialog.getDialogPane().lookupButton(addButtonType);
+        loginButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        username.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+        
+        dialog.setResultConverter(dialogButton -> {
+        if (dialogButton == addButtonType) {
+            return username.getText();
+         }
+            return null;
+        });
+
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> username.requestFocus());
+
+        Optional<String> result = dialog.showAndWait();
+        
+        if(result.isPresent()) {
+            String email = result.get();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Pattern emailPattern = Pattern.compile("^[_A-Za-z0-9-]+(.[A-Za-z0-9-]+)*@[A-Za-z0-9-]+(.[A-Za-z0-9-]+)*(.[A-Za-z]{2,})$");
+            Matcher match = emailPattern.matcher(email);
+            if(!match.matches()){
+                alert.setContentText("please enter valid mail");
+                alert.showAndWait();
+            }else if(email.equals(controller.me.getEmail())){
+                alert.setContentText("you are adding yourself :)");
+                alert.showAndWait();
+            }else {
+                boolean friend=false;
+                for(User u: controller.friends.values()){
+                    if(u.getEmail().equals(email)) friend=true;
+                }
+                if(friend){
+                    alert.setContentText("this user is your friend already");
+                    alert.showAndWait();
+                }else if(!controller.isExist(email)){
+                    alert.setContentText("no user registered by this email");
+                    alert.showAndWait();
+                }else{
+                    controller.addFriend(email);  
+                    User fr = controller.getUserData(email);
+                    controller.friends.put(fr.getUserName(), fr);
+                }
+            }
+              
+        }
+            
+        
+    }
     
     
 }

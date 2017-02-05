@@ -40,6 +40,7 @@ public class ChatWindow {
             chatWindowcontroller = fxmlLoader.getController();
             chatWindowcontroller.setCon(this,from);
             Scene scene = new Scene(root);
+            stage.setResizable(false);
             stage.setTitle("chat with "+ to.getUserName());
             stage.setScene(scene);
             stage.show();

@@ -110,6 +110,7 @@ public class SignupPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        datePicker.setEditable(false);
         signupBtn.setDefaultButton(true);
            myComboBox.getItems().addAll(conutries); 
            myComboBox.getSelectionModel().selectFirst();
