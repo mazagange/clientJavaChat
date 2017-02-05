@@ -20,6 +20,8 @@ public interface ServerInterface extends Remote {
 
     public ArrayList<User> getFriends(int id) throws RemoteException;
     
+    public ArrayList<User> getFriendsRequests(int id) throws RemoteException;
+    
     public void registerUser(int id,ClientInterface client)throws RemoteException;
     
     public void unRegisterUser(int id,ClientInterface client)throws RemoteException;
@@ -35,4 +37,8 @@ public interface ServerInterface extends Remote {
     public void sendToGroup(Massage msg,Group group)throws RemoteException;
 
     public void addFriend(int id,String emailOfFriend,String Cat) throws RemoteException;
+    
+    public void acceptFriend(int id, int friendId) throws RemoteException;
+
+    public void refuseFriend(int id, int friendId)throws RemoteException;
 }

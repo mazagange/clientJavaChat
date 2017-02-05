@@ -13,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -21,6 +22,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class ClientController extends Application {
@@ -181,6 +186,7 @@ public class ClientController extends Application {
             case "profilePage":
                 updateProfile(me);
                 myStage.setScene(profileScene);
+                checkForFriendRequests();
                 break;
         }
 
@@ -219,7 +225,9 @@ public class ClientController extends Application {
     
     public void recieveMassage(Massage msg,User from){
         if(chatWindows.containsKey(from.getId())){
-            chatWindows.get(from.getId()).recieveMassage(msg);
+            Platform.runLater(() -> {
+                chatWindows.get(from.getId()).recieveMassage(msg);
+            });
         }else{
             Platform.runLater(
                 () -> {
@@ -237,6 +245,42 @@ public class ClientController extends Application {
         try {
             ServerIntRef.addFriend(me.getId(),email,"friends");
         } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void checkForFriendRequests(){
+        try{
+            ArrayList<User> friendsRequests = ServerIntRef.getFriendsRequests(me.getId());
+            friendsRequests.forEach((f) -> {
+                     Alert alert = new Alert(AlertType.CONFIRMATION);
+                     alert.setTitle("Friend Request");
+                     alert.setHeaderText(f.getUserName() + " want to be your friend :");
+                     alert.setContentText("Choose your option.");
+
+                     ButtonType buttonTypeOne = new ButtonType("Acccept");
+                     ButtonType buttonTypeCancel = new ButtonType("Refuse", ButtonData.CANCEL_CLOSE);
+
+                     alert.getButtonTypes().setAll(buttonTypeOne,  buttonTypeCancel);
+
+                     Optional<ButtonType> result = alert.showAndWait();
+                     if (result.get() == buttonTypeOne){
+                         // ... user chose "Accept"
+                         try{
+                            ServerIntRef.acceptFriend(me.getId(), f.getId());
+                         } catch(Exception ex){
+                             ex.printStackTrace();
+                         }
+                     } else {
+                         // ... user chose CANCEL or closed the dialog
+                         try{
+                            ServerIntRef.refuseFriend(me.getId(), f.getId());
+                         } catch(Exception ex){
+                             ex.printStackTrace();
+                         }
+                     } 
+            });
+        } catch (Exception ex){
             ex.printStackTrace();
         }
     }

@@ -13,5 +13,5 @@ public interface ClientInterface extends Remote{
     void notifyOffline(User user)throws RemoteException;
     void recieveAdv(String adv)throws RemoteException;
     void notifyChangeStatus(User user,String status)throws RemoteException;
-    
+    void checkForRequests()throws RemoteException;
 }

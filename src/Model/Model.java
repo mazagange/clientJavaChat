@@ -50,5 +50,12 @@ public class Model extends UnicastRemoteObject implements ClientInterface{
     public void notifyChangeStatus(User user, String status)throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void checkForRequests() throws RemoteException {
+        controller.checkForFriendRequests();
+    }
+    
+    
     
 }
