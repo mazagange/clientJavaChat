@@ -59,6 +59,10 @@ public class SignupPageController implements Initializable {
      ToggleGroup gender;
     ObservableList<String> conutries = FXCollections.observableArrayList("choose a country","Egypt","USA","UAE");
     ClientController controller;
+
+    public SignupPageController(ClientController aThis) {
+        this.controller=aThis;
+    }
  
     
     @FXML

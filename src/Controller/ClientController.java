@@ -61,23 +61,25 @@ public class ClientController extends Application {
        stage.setOnCloseRequest((event) -> {
            unRegister();
        });
+        signInController = new SigninPageController(this);
         FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setController(signInController);
         Parent signin = fxmlLoader.load(getClass().getResource("/View/signinPage.fxml").openStream());
         signinScene = new Scene(signin);
-        signInController = fxmlLoader.getController();
-        signInController.setCon(this);
         
+        
+        signUpController = new SignupPageController(this);
         FXMLLoader fxmlLoader2 = new FXMLLoader();
+        fxmlLoader2.setController(signUpController);
         Parent signup = fxmlLoader2.load(getClass().getResource("/View/signupPage.fxml").openStream());
         signupScene = new Scene(signup);
-        signUpController = fxmlLoader2.getController();
-        signUpController.setCon(this);
         
+        profileController = new profile_Style_Controller(this);
         FXMLLoader fxmlLoader3 = new FXMLLoader();
+        fxmlLoader3.setController(profileController);
         Parent profile = fxmlLoader3.load(getClass().getResource("/View/profile_Style.fxml").openStream());
         profileScene = new Scene(profile);
-        profileController = fxmlLoader3.getController();
-        profileController.setCon(this);
+        
         
         
         
@@ -94,8 +96,9 @@ public class ClientController extends Application {
     public ClientController() throws RemoteException {
 
         Registry reg = LocateRegistry.getRegistry("127.0.0.1");
-
+        
         try {
+            
             ServerIntRef = (ServerInterface) reg.lookup("chatserver");
         } catch (Exception ex) {
             ex.printStackTrace();

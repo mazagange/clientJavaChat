@@ -59,6 +59,10 @@ public class profile_Style_Controller implements Initializable {
     @FXML ObservableList<String> states=FXCollections.observableArrayList("available","busy","away");
      
     ClientController controller;
+
+    public profile_Style_Controller(ClientController aThis) {
+        this.controller = aThis;
+    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {

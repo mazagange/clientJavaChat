@@ -8,6 +8,10 @@ package Model;
 import Controller.ClientController;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import javafx.application.Platform;
+import javafx.scene.paint.Paint;
+import javafx.util.Duration;
+import tray.notification.TrayNotification;
 
 /**
  *
@@ -33,12 +37,26 @@ public class Model extends UnicastRemoteObject implements ClientInterface{
 
     @Override
     public void notifyOnline(User user)throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Platform.runLater(() -> {
+            TrayNotification tray = new TrayNotification();
+            tray.setTitle("Connect Me Alert");
+            tray.setMessage(user.getUserName()+" Is now Online");
+            tray.setRectangleFill(Paint.valueOf("#488484"));
+            tray.showAndDismiss(Duration.seconds(4));
+        });
+        
     }
 
     @Override
     public void notifyOffline(User user)throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Platform.runLater(() -> {
+            TrayNotification tray = new TrayNotification();
+            tray.setTitle("Connect Me Alert");
+            tray.setMessage(user.getUserName()+" Is now Offline");
+            tray.setRectangleFill(Paint.valueOf("#488484"));
+            tray.showAndDismiss(Duration.seconds(4));
+        });
+        
     }
 
     @Override

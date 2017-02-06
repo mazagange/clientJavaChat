@@ -44,6 +44,10 @@ public class SigninPageController implements Initializable{
     @FXML private TextField email;
     @FXML private PasswordField pass;
     ClientController controller;
+
+    public SigninPageController(ClientController aThis) {
+            this.controller = aThis;
+    }
     @FXML
     void signinBtn_OnAction() {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

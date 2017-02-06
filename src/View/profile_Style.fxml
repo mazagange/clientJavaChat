@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="400.0" stylesheets="@/View/prof_Style.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.profile_Style_Controller">
+<AnchorPane prefHeight="650.0" prefWidth="400.0" stylesheets="@/View/prof_Style.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuButton layoutX="14.0" layoutY="5.0" mnemonicParsing="false" onAction="#addFriendAction" prefHeight="22.0" prefWidth="102.0" style="-fx-background-color: #ff931e;" text="File">
         <items>
