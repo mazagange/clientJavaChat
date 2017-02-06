@@ -72,6 +72,14 @@ public class FXMLDocumentController implements Initializable {
         sendBtn.setOnAction((event) -> {
             send();
         });
+        sendArea.setStyle( "-fx-text-fill: " + toRgbString(color.getValue()) + ";");
+        color.setOnAction((event) -> {
+            sendArea.setStyle( "-fx-text-fill: " + toRgbString(color.getValue()) + ";");
+        });
+        sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue())); 
+        fontSize.setOnAction((event) -> {
+           sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue())); 
+        });
         
     }
 
@@ -105,7 +113,7 @@ public class FXMLDocumentController implements Initializable {
         
     }
     
-    private String toRgbString(TextColor c) {
+    private String toRgbString(Color c) {
         return "rgb("
                           + to255Int(c.getRed())
                     + "," + to255Int(c.getGreen())
