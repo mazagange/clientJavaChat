@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ClientController extends Application {
@@ -82,7 +83,7 @@ public class ClientController extends Application {
         
         
         
-        
+        stage.getIcons().add(new Image("images/chatting.png"));
         stage.setResizable(false);
         stage.setScene(signinScene);
         stage.setTitle("Connect me");
@@ -271,6 +272,7 @@ public class ClientController extends Application {
                          // ... user chose "Accept"
                          try{
                             ServerIntRef.acceptFriend(me.getId(), f.getId());
+                            profileController.updateProfile(me);
                          } catch(Exception ex){
                              ex.printStackTrace();
                          }
