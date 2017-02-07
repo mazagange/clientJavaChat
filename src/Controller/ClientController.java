@@ -44,6 +44,7 @@ public class ClientController extends Application {
     public HashMap<String,User> friends;
     public HashMap<Integer,ChatWindow> chatWindows= new HashMap<>();
     Model model;
+    Registry reg = LocateRegistry.getRegistry("127.0.0.1");
     public static void main(String[] args) {
         
             launch(args);
@@ -96,7 +97,6 @@ public class ClientController extends Application {
 
     public ClientController() throws RemoteException {
 
-        Registry reg = LocateRegistry.getRegistry("127.0.0.1");
         
         try {
             
@@ -111,8 +111,9 @@ public class ClientController extends Application {
     
     public void register(){
         try {
+            
             ServerIntRef.registerUser(me.getId(), model);
-        } catch (RemoteException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -132,8 +133,11 @@ public class ClientController extends Application {
     public boolean isExist(String email) {
         boolean exist = true;
         try {
+            if(ServerIntRef == null){
+                ServerIntRef = (ServerInterface) reg.lookup("chatserver");
+            }
             exist = ServerIntRef.isExist(email);
-        } catch (RemoteException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return exist;
@@ -288,5 +292,18 @@ public class ClientController extends Application {
         } catch (Exception ex){
             ex.printStackTrace();
         }
+    }
+
+    public void goOff(String reason) {
+        Platform.runLater(() -> {
+            changeView("signinPage");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("error");
+            alert.setHeaderText(null);
+            alert.setContentText(reason);
+            alert.show();
+            ServerIntRef = null;
+        });
+        
     }
 }

@@ -73,6 +73,11 @@ public class Model extends UnicastRemoteObject implements ClientInterface{
     public void checkForRequests() throws RemoteException {
         controller.checkForFriendRequests();
     }
+
+    @Override
+    public void goOff(String reason)throws RemoteException {
+        controller.goOff(reason);
+    }
     
     
     
