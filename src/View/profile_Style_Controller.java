@@ -7,6 +7,7 @@ package View;
 
 import Controller.ClientController;
 import Model.User;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -38,7 +39,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -57,6 +61,13 @@ public class profile_Style_Controller implements Initializable {
     
     @FXML private ComboBox comboStatus;
     @FXML ObservableList<String> states=FXCollections.observableArrayList("available","busy","away");
+      @FXML
+    private ImageView ad;
+    @FXML
+    private MenuItem logout;
+
+    @FXML
+    private MenuItem exit;
      
     ClientController controller;
 
@@ -66,7 +77,7 @@ public class profile_Style_Controller implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+            
             // TODO
             comboStatus.getItems().addAll(states);
             comboStatus.getSelectionModel().selectFirst();
@@ -190,6 +201,22 @@ public class profile_Style_Controller implements Initializable {
         }
             
         
+    }
+    
+      @FXML
+    void exit(ActionEvent event) {
+        controller.exit();
+    }
+
+    @FXML
+    void logout(ActionEvent event) {
+        controller.logout();
+    }
+
+    public void recieveAdv(byte[] image) {
+        ByteArrayInputStream st = new ByteArrayInputStream(image);
+        Image img = new Image(st);
+        ad.setImage(img);
     }
     
     

@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.File;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -41,4 +42,7 @@ public interface ServerInterface extends Remote {
     public void acceptFriend(int id, int friendId) throws RemoteException;
 
     public void refuseFriend(int id, int friendId)throws RemoteException;
+
+    public ClientInterface requestSendFile(File file, User to)throws RemoteException;
+    public void RequestLatestAd(User user)throws RemoteException;
 }

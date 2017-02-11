@@ -11,6 +11,7 @@ import Model.Massage;
 import Model.TextColor;
 import Model.TextFont;
 import Model.User;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.DoubleProperty;
@@ -34,36 +35,43 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 
 /**
  *
  * @author BOSHA
  */
 public class FXMLDocumentController implements Initializable {
-    
+
     @FXML
     private Label label;
-    @FXML private ScrollPane scroll;
-    @FXML private TextFlow chatArea;
-    @FXML private TextArea sendArea;
-    @FXML private ColorPicker color;
-    @FXML private ComboBox<Integer> fontSize;
-    ObservableList fontlist =  FXCollections.observableArrayList(10,12,14,16,18,20);
-    ChatWindow chatWindow; 
-    @FXML private Button sendBtn;
+    @FXML
+    private ScrollPane scroll;
+    @FXML
+    private TextFlow chatArea;
+    @FXML
+    private TextArea sendArea;
+    @FXML
+    private ColorPicker color;
+    @FXML
+    private ComboBox<Integer> fontSize;
+    ObservableList fontlist = FXCollections.observableArrayList(12, 14, 16, 18, 20,22,24);
+    ChatWindow chatWindow;
+    @FXML
+    private Button sendBtn;
+    @FXML
+    private Button fileBtn;
     User me;
-    
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         chatArea.setStyle("-fx-background-color: white;");
-        fontSize.getItems().addAll(fontlist); 
+        fontSize.getItems().addAll(fontlist);
         fontSize.getSelectionModel().selectFirst();
         color.setValue(Color.BLUE);
         sendArea.setOnKeyPressed((event) -> {
-            if(event.getCode() == KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
                 send();
                 event.consume();
             }
@@ -72,65 +80,80 @@ public class FXMLDocumentController implements Initializable {
         sendBtn.setOnAction((event) -> {
             send();
         });
-        sendArea.setStyle( "-fx-text-fill: " + toRgbString(color.getValue()) + ";");
+        sendArea.setStyle("-fx-text-fill: " + toRgbString(color.getValue()) + ";");
         color.setOnAction((event) -> {
-            sendArea.setStyle( "-fx-text-fill: " + toRgbString(color.getValue()) + ";");
+            sendArea.setStyle("-fx-text-fill: " + toRgbString(color.getValue()) + ";");
         });
-        sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue())); 
+        sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
         fontSize.setOnAction((event) -> {
-           sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue())); 
+            sendArea.setFont(new Font(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
         });
-        
+
     }
 
-    private void send(){
-        if(!sendArea.getText().equals("")){
-                Massage msg = new Massage(sendArea.getText(), new TextColor(color.getValue().getRed(),color.getValue().getGreen(),color.getValue().getBlue()), new TextFont(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
-                chatWindow.sendMassage(msg);
-                showMasssage(msg, me);
-            }
+    private void send() {
+        if (!sendArea.getText().equals("")) {
+            Massage msg = new Massage(sendArea.getText(), new TextColor(color.getValue().getRed(), color.getValue().getGreen(), color.getValue().getBlue()), new TextFont(fontSize.getSelectionModel().getSelectedItem().doubleValue()));
+            chatWindow.sendMassage(msg);
+            showMasssage(msg, me);
+        }
         sendArea.setText("");
-        
+
     }
-    public void saveChat(ActionEvent a){
-        
+
+    public void saveChat(ActionEvent a) {
+
     }
-    public void chooseFile(ActionEvent a){
-        
+
+    @FXML
+    private void chooseFile(ActionEvent a) {
+        chatWindow.openChooser();
     }
-    
-    public void showMasssage(Massage msg,User from){
-        Text text = new Text(from.getUserName()+" : ");
-        
+
+    public void showMasssage(Massage msg, User from) {
+        Text text = new Text(from.getUserName() + " : ");
+
         text.setFill(new Color(0, 0, 0, 1));
         text.setFont(Font.getDefault());
-        
+
         chatArea.getChildren().add(text);
-        Text text2 = new Text(msg.getContent()+"\n");
+        Text text2 = new Text(msg.getContent() + "\n");
         text2.setFill(new Color(msg.getColor().getRed(), msg.getColor().getGreen(), msg.getColor().getBlue(), 1));
         text2.setFont(new Font(msg.getFont().getSize()));
         chatArea.getChildren().add(text2);
-        
+
     }
     
+    public void showSystemMasssage(String msg) {
+        Text text = new Text("System : ");
+
+        text.setFill(new Color(0, 0, 0, 1));
+        text.setFont(Font.getDefault());
+
+        chatArea.getChildren().add(text);
+        Text text2 = new Text(msg + "\n");
+        text2.setFill(Color.RED);
+        text2.setFont(Font.getDefault());
+        chatArea.getChildren().add(text2);
+
+    }
+
     private String toRgbString(Color c) {
         return "rgb("
-                          + to255Int(c.getRed())
-                    + "," + to255Int(c.getGreen())
-                    + "," + to255Int(c.getBlue())
-             + ")";
+                + to255Int(c.getRed())
+                + "," + to255Int(c.getGreen())
+                + "," + to255Int(c.getBlue())
+                + ")";
     }
-    
+
     private int to255Int(double d) {
         return (int) (d * 255);
     }
-    
-    
-    
-    public void setCon(ChatWindow  con,User me){
-        this.chatWindow= con;
-        this.me=me;
-        
+
+    public void setCon(ChatWindow con, User me) {
+        this.chatWindow = con;
+        this.me = me;
+
     }
-    
+
 }

@@ -1,6 +1,7 @@
 package Controller;
 
 import ChatWindow.ChatWindow;
+import Model.ClientInterface;
 import Model.Massage;
 import Model.Model;
 import Model.ServerInterface;
@@ -8,12 +9,17 @@ import Model.User;
 import View.SigninPageController;
 import View.SignupPageController;
 import View.profile_Style_Controller;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -27,10 +33,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ClientController extends Application {
-
+    
     SigninPageController viewRefrance;
     ServerInterface ServerIntRef;
     private Scene signinScene;
@@ -41,16 +48,16 @@ public class ClientController extends Application {
     private profile_Style_Controller profileController;
     private Stage myStage;
     public User me;
-    public HashMap<String,User> friends;
-    public HashMap<Integer,ChatWindow> chatWindows= new HashMap<>();
+    public HashMap<String, User> friends;
+    public HashMap<Integer, ChatWindow> chatWindows = new HashMap<>();
     Model model;
     Registry reg = LocateRegistry.getRegistry("127.0.0.1");
+
     public static void main(String[] args) {
-        
-            launch(args);
+
+        launch(args);
     }
 
-    
     @Override
     public void init() throws Exception {
 
@@ -59,71 +66,64 @@ public class ClientController extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         myStage = stage;
-        
-       stage.setOnCloseRequest((event) -> {
-           unRegister();
-       });
+
+        stage.setOnCloseRequest((event) -> {
+            exit();
+        });
         signInController = new SigninPageController(this);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setController(signInController);
         Parent signin = fxmlLoader.load(getClass().getResource("/View/signinPage.fxml").openStream());
         signinScene = new Scene(signin);
-        
-        
+
         signUpController = new SignupPageController(this);
         FXMLLoader fxmlLoader2 = new FXMLLoader();
         fxmlLoader2.setController(signUpController);
         Parent signup = fxmlLoader2.load(getClass().getResource("/View/signupPage.fxml").openStream());
         signupScene = new Scene(signup);
-        
+
         profileController = new profile_Style_Controller(this);
         FXMLLoader fxmlLoader3 = new FXMLLoader();
         fxmlLoader3.setController(profileController);
         Parent profile = fxmlLoader3.load(getClass().getResource("/View/profile_Style.fxml").openStream());
         profileScene = new Scene(profile);
-        
-        
-        
+
         stage.getIcons().add(new Image("images/chatting.png"));
         stage.setResizable(false);
         stage.setScene(signinScene);
         stage.setTitle("Connect me");
         stage.show();
         
-        
-        
 
     }
 
     public ClientController() throws RemoteException {
 
-        
         try {
-            
+
             ServerIntRef = (ServerInterface) reg.lookup("chatserver");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
-         model = new Model(this);
-         
+
+        model = new Model(this);
+
     }
-    
-    public void register(){
+
+    public void register() {
         try {
-            
+
             ServerIntRef.registerUser(me.getId(), model);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
-    public void unRegister(){
+
+    public void unRegister() {
         try {
-            if(me !=null){
+            if (me != null || ServerIntRef != null) {
                 ServerIntRef.unRegisterUser(me.getId(), model);
             }
-            Platform.exit();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class ClientController extends Application {
     public boolean isExist(String email) {
         boolean exist = true;
         try {
-            if(ServerIntRef == null){
+            if (ServerIntRef == null) {
                 ServerIntRef = (ServerInterface) reg.lookup("chatserver");
             }
             exist = ServerIntRef.isExist(email);
@@ -195,18 +195,21 @@ public class ClientController extends Application {
                 updateProfile(me);
                 myStage.setScene(profileScene);
                 checkForFriendRequests();
+                RequestLatestAd();
                 break;
         }
 
     }
-    public void registerMe(User me){
+
+    public void registerMe(User me) {
         this.me = me;
     }
-    public void registerFriends(HashMap<String,User> friends){
+
+    public void registerFriends(HashMap<String, User> friends) {
         this.friends = friends;
     }
-    
-    public void updateProfile(User me){
+
+    public void updateProfile(User me) {
         try {
             profileController.updateProfile(me);
         } catch (RemoteException ex) {
@@ -215,10 +218,10 @@ public class ClientController extends Application {
     }
 
     public void openChatWindow(String friend) {
-        
+
         User f = friends.get(friend);
-        if(!chatWindows.containsKey(f.getId())){
-            ChatWindow c = new ChatWindow(me,f,this);
+        if (!chatWindows.containsKey(f.getId())) {
+            ChatWindow c = new ChatWindow(me, f, this);
             chatWindows.put(f.getId(), c);
         }
     }
@@ -230,66 +233,69 @@ public class ClientController extends Application {
             ex.printStackTrace();
         }
     }
-    
-    public void recieveMassage(Massage msg,User from){
-        if(chatWindows.containsKey(from.getId())){
+
+    public void recieveMassage(Massage msg, User from) {
+        if (chatWindows.containsKey(from.getId())) {
             Platform.runLater(() -> {
                 chatWindows.get(from.getId()).recieveMassage(msg);
             });
-        }else{
+        } else {
             Platform.runLater(
-                () -> {
-                    // Update UI here.
-                    ChatWindow c = new ChatWindow(me, from, this);
-                    chatWindows.put(from.getId(), c);
-                    c.recieveMassage(msg);
-                  }
-                );
-            
+                    () -> {
+                        // Update UI here.
+                        ChatWindow c = new ChatWindow(me, from, this);
+                        chatWindows.put(from.getId(), c);
+                        c.recieveMassage(msg);
+                    }
+            );
+
         }
     }
 
     public void addFriend(String email) {
         try {
-            ServerIntRef.addFriend(me.getId(),email,"friends");
+            ServerIntRef.addFriend(me.getId(), email, "friends");
         } catch (RemoteException ex) {
             ex.printStackTrace();
         }
     }
-    
-    public void checkForFriendRequests(){
-        try{
+
+    public void checkForFriendRequests() {
+        try {
             ArrayList<User> friendsRequests = ServerIntRef.getFriendsRequests(me.getId());
             friendsRequests.forEach((f) -> {
-                     Alert alert = new Alert(AlertType.CONFIRMATION);
-                     alert.setTitle("Friend Request");
-                     alert.setHeaderText(f.getUserName() + " want to be your friend :");
-                     alert.setContentText("Choose your option.");
 
-                     ButtonType buttonTypeOne = new ButtonType("Acccept");
-                     ButtonType buttonTypeCancel = new ButtonType("Refuse", ButtonData.CANCEL_CLOSE);
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle("Friend Request");
+                    alert.setHeaderText(f.getUserName() + " want to be your friend :");
+                    alert.setContentText("Choose your option.");
 
-                     alert.getButtonTypes().setAll(buttonTypeOne,  buttonTypeCancel);
+                    ButtonType buttonTypeOne = new ButtonType("Acccept");
+                    ButtonType buttonTypeCancel = new ButtonType("Refuse", ButtonData.CANCEL_CLOSE);
 
-                     Optional<ButtonType> result = alert.showAndWait();
-                     if (result.get() == buttonTypeOne){
-                         // ... user chose "Accept"
-                         try{
+                    alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == buttonTypeOne) {
+                        // ... user chose "Accept"
+                        try {
                             ServerIntRef.acceptFriend(me.getId(), f.getId());
                             profileController.updateProfile(me);
-                         } catch(Exception ex){
-                             ex.printStackTrace();
-                         }
-                     } else {
-                         // ... user chose CANCEL or closed the dialog
-                         try{
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        // ... user chose CANCEL or closed the dialog
+                        try {
                             ServerIntRef.refuseFriend(me.getId(), f.getId());
-                         } catch(Exception ex){
-                             ex.printStackTrace();
-                         }
-                     } 
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
             });
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -304,6 +310,93 @@ public class ClientController extends Application {
             alert.show();
             ServerIntRef = null;
         });
-        
+
+    }
+
+    public void requestSendFile(File file, User to) {
+        try {
+            ClientInterface client = ServerIntRef.requestSendFile(file, to);
+            if (client != null) {
+                File recieve = client.acceptRecieveFile(file, me);
+                if (recieve != null) {
+                    new Thread(() -> {
+                        try {
+                            model.sendData(file, recieve, client);
+                            chatWindows.get(to.getId()).showSystemMessage(" file send complete ");
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }).start();
+                } else {
+                    chatWindows.get(to.getId()).showSystemMessage(to.getUserName() + " refused to accept your file");
+                }
+            } else {
+                chatWindows.get(to.getId()).showSystemMessage("you can't send file to offline user");
+            }
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public File acceptRecieveFile(File f, User from) throws InterruptedException, ExecutionException {
+        final FutureTask<File> query = new FutureTask(() -> {
+            if (chatWindows.containsKey(from.getId())) {
+                return chatWindows.get(from.getId()).acceptRecieveFile(f);
+            } else {
+
+                ChatWindow c = new ChatWindow(me, from, ClientController.this);
+                chatWindows.put(from.getId(), c);
+                return c.acceptRecieveFile(f);
+            }
+        });
+        Platform.runLater(query);
+        File ff;
+        ff = query.get();
+        return ff;
+    }
+
+    public void showSystemMassage(String msg, User from) {
+        if (chatWindows.containsKey(from.getId())) {
+            Platform.runLater(() -> {
+                chatWindows.get(from.getId()).showSystemMessage(msg);;
+            });
+        } else {
+            Platform.runLater(
+                    () -> {
+                        // Update UI here.
+                        ChatWindow c = new ChatWindow(me, from, this);
+                        chatWindows.put(from.getId(), c);
+                        c.showSystemMessage(msg);
+                    }
+            );
+
+        }
+    }
+
+    public void exit() {
+        logout();
+        Platform.exit();
+        System.exit(0);
+    }
+
+    public void logout() {
+        unRegister();
+        changeView("signinPage");
+    }
+
+    public void addFriendToList(User friend) {
+        friends.put(friend.getUserName(), friend);
+    }
+
+    public void recieveAdv(byte[] image) {
+        profileController.recieveAdv(image);
+    }
+
+    private void RequestLatestAd() {
+        try {
+            ServerIntRef.RequestLatestAd(me);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
     }
 }

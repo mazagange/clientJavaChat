@@ -9,13 +9,16 @@ import ChatWindow.View.FXMLDocumentController;
 import Controller.ClientController;
 import Model.Massage;
 import Model.User;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 public class ChatWindow {
     
@@ -23,6 +26,7 @@ public class ChatWindow {
     User to;
     ClientController controller;
     FXMLDocumentController chatWindowcontroller;
+    Stage stage;
 
     public ChatWindow(User me, User f,ClientController controller) {
         this.from = me;
@@ -35,6 +39,7 @@ public class ChatWindow {
     
     public void start(Stage stage) {
         try {
+            this.stage = stage;
             FXMLLoader fxmlLoader = new FXMLLoader();
             Parent root = fxmlLoader.load(getClass().getResource("/ChatWindow/View/FXMLDocument.fxml").openStream());
             chatWindowcontroller = fxmlLoader.getController();
@@ -61,6 +66,32 @@ public class ChatWindow {
 
     public void sendMassage(Massage msg) {
         controller.sendMassage(msg,from,to);
+    }
+    
+    public void openChooser(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("choose File to send");
+        File file = fileChooser.showOpenDialog(stage);
+        if(file != null){
+            controller.requestSendFile(file,to);
+        }
+        
+    }
+    
+    public File acceptRecieveFile(File f) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save file");
+        fileChooser.setInitialFileName(f.getName());
+        
+        File file = fileChooser.showSaveDialog(stage);
+        return file;
+    }
+
+    public void showSystemMessage(String msg) {
+        Platform.runLater(() -> {
+            chatWindowcontroller.showSystemMasssage(msg);
+        });
+        
     }
   
     

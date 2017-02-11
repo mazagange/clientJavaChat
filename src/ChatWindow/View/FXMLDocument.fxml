@@ -94,6 +94,7 @@
                   <Blend />
                </effect>
             </Label>
+            <Button fx:id="fileBtn" layoutX="477.0" layoutY="11.0" mnemonicParsing="false" onAction="#chooseFile" text="Send File" />
          </children></AnchorPane>
   </items>
 </SplitPane>
